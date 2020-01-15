@@ -15,6 +15,8 @@ struct ContentView: View {
     @State private var calculatorText = "0"
     @State private var isTypingNumber = false
     
+    // smart stuff
+    
     var body: some View {
         VStack(spacing: 50) {
             Spacer()
