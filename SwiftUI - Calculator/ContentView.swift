@@ -18,11 +18,25 @@ struct ContentView: View {
 // ----------  ----------  ---------- MARK - Body ----------  ----------  ----------
 //      basically the whole body (=everything u see on screen)
     var body: some View {
-        VStack(spacing: 50) {
+        VStack(spacing: 20) {
             Spacer()
             TextField("0", text: $calculatorText).font(.system(size: 100))
                 .padding()
                 .multilineTextAlignment(.trailing)
+                .foregroundColor(.white)
+            
+            HStack {
+                Button(action: {
+                    self.operandTapped("(")
+                }) {
+                    Text("[")
+                }
+                Button(action: {
+                    self.operandTapped(")")
+                }) {
+                    Text("]")
+                }
+            }.buttonStyle(klammernButton())
             
             HStack {
                 Group {
@@ -45,69 +59,69 @@ struct ContentView: View {
             }
 
             HStack {
-                createCalcDigit("4")
-                Spacer()
-                createCalcDigit("5")
-                Spacer()
-                createCalcDigit("6")
-                Spacer()
-                Button(action: {
-                    self.operandTapped("/")
-                }) {
-                    Text("/")
-                }
-                Spacer()
-                Button(action: {
-                    self.operandTapped("*")
-                }) {
-                    Text("×")
-                }
-            }.padding(.horizontal, 28)
-            .multilineTextAlignment(.center)
+                Group {
+                    createCalcDigit("4")
+                    createCalcDigit("5")
+                    createCalcDigit("6")
+                }.buttonStyle(numberButton())
+                Group {
+                    Button(action: {
+                        self.operandTapped("/")
+                    }) {
+                        Text("/")
+                    }
+                    Spacer()
+                    Button(action: {
+                        self.operandTapped("*")
+                    }) {
+                        Text("×")
+                    }
+                }.buttonStyle(calcButton())
+            }
 
             HStack {
-                createCalcDigit("1")
-                Spacer()
-                createCalcDigit("2")
-                Spacer()
-                createCalcDigit("3")
-                Spacer()
-                Button(action: {
-                    self.operandTapped("+")
-                }) {
-                    Text("+")
-                }
-                Spacer()
-                Button(action: {
-                    self.operandTapped("-")
-                }) {
-                    Text("-")
-                }
-                
-            }.padding(.horizontal, 33)
-            .multilineTextAlignment(.center)
+                Group {
+                    createCalcDigit("1")
+                    createCalcDigit("2")
+                    createCalcDigit("3")
+                }.buttonStyle(numberButton())
+                Group {
+                    Button(action: {
+                        self.operandTapped("+")
+                    }) {
+                        Text("+")
+                    }
+                    Spacer()
+                    Button(action: {
+                        self.operandTapped("-")
+                    }) {
+                        Text("-")
+                    }
+                }.buttonStyle(calcButton())
+            }
 
             HStack {
-                createCalcDigit("0")
-                Spacer()
-                createCalcDigit(".")
-                Spacer()
+                Group {
+                    createCalcDigit("0")
+                    createCalcDigit(".")
+                }.buttonStyle(numberButton())
                 Button(action: {
                     self.operandTapped("0")
                 }) {
                     Text("AC")
-                }
-                Spacer(minLength: 140)
+                    .font(.system(size: 25))
+                }.buttonStyle(calcButton())
                 Button(action: {
                     self.calculate()
                 }) {
                     (Text("="))
-                }
-            }.padding(.horizontal, 33)
-            .multilineTextAlignment(.center)
+                }.buttonStyle(equalButton())
+            }.padding(.bottom, 50)
         }
         .font(.largeTitle)
+        .padding()
         .background(Color(red: 72/255, green: 76/255, blue: 80/255))
+        .edgesIgnoringSafeArea(.all)
     }
     
     private func createCalcDigit(_ number: String) -> Button<Text> {
@@ -184,10 +198,23 @@ struct ContentView: View {
         }
     }
     
+    struct klammernButton: PrimitiveButtonStyle {
+        func makeBody(configuration: Self.Configuration) -> some View {
+            configuration.label
+                .font(.system(size: 25))
+                .multilineTextAlignment(.trailing)
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .padding(.vertical, 7)
+                .foregroundColor(Color(red: 141/255, green: 201/255, blue: 207/255))
+                .border(Color.gray, width: 1)
+        }
+    }
+    
     struct calcButton: PrimitiveButtonStyle {
         func makeBody(configuration: Self.Configuration) -> some View {
             configuration.label
                 .frame(minWidth: 0, maxWidth: .infinity)
+                .font(.system(size: 25))
                 .padding()
                 .foregroundColor(.black)
                 .background(Color(red: 141/255, green: 201/255, blue: 207/255))
@@ -195,7 +222,19 @@ struct ContentView: View {
         }
     }
     
+    struct equalButton: PrimitiveButtonStyle {
+        func makeBody(configuration: Self.Configuration) -> some View {
+            configuration.label
+                .frame(minWidth: 115, maxWidth: .infinity)
+                .font(.system(size: 25))
+                .foregroundColor(.black)
+                .padding()
+                .background(Color(red: 223/255, green: 241/255, blue: 186/255))
+                .cornerRadius(40)
+        }
+    }
     
+// ----------  ----------  ---------- MARK - ContenView Preview ----------  ----------  ----------
 //      This is just for preview reasons here, do not delete or change (unless you know what you are doing)!!
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
