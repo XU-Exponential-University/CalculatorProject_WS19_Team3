@@ -28,19 +28,21 @@ struct ContentView: View {
                 .padding()
                 .multilineTextAlignment(.trailing)
                 .foregroundColor(.white)
+                .truncationMode(.head)
+                .disabled(true)
             
             HStack {
                 
-                Button(action: {
-                    self.operandTapped("(")
-                }) {
+                Button(action: {}) {
                     Text("(")
+                }.onTapGesture {
+                    self.operandTapped("(")
                 }
                 
-                Button(action: {
-                    self.operandTapped(")")
-                }) {
+                Button(action: {}) {
                     Text(")")
+                }.onTapGesture {
+                    self.operandTapped(")")
                 }
                 
             }.buttonStyle(klammernButton())
@@ -55,16 +57,16 @@ struct ContentView: View {
                 
                 Group {
                     
-                    Button(action: {
-                        self.operandTapped("log")
-                    }) {
-                        Text("LN")
+                    Button(action: {}) {
+                        Text("√")
+                    }.onTapGesture {
+                        self.operandTapped("√")
                     }
                     
-                    Button(action: {
-                        self.operandTapped("%")
-                    }) {
+                    Button(action: {}) {
                         Text("%")
+                    }.onTapGesture {
+                        self.operandTapped("%")
                     }
                     
                 }.buttonStyle(calcButton())
@@ -80,18 +82,18 @@ struct ContentView: View {
                 
                 Group {
                     
-                    Button(action: {
-                        self.operandTapped("/")
-                    }) {
+                    Button(action: {}) {
                         Text("/")
+                    }.onTapGesture {
+                        self.operandTapped("/")
                     }
                     
                     Spacer()
                     
-                    Button(action: {
-                        self.operandTapped("*")
-                    }) {
+                    Button(action: {}) {
                         Text("×")
+                    }.onTapGesture {
+                        self.operandTapped("*")
                     }
                     
                 }.buttonStyle(calcButton())
@@ -107,17 +109,18 @@ struct ContentView: View {
                 
                 Group {
                     
-                    Button(action: {
-                        self.operandTapped("+")
-                    }) {
+                    Button(action: {}) {
                         Text("+")
+                    }.onTapGesture {
+                        self.operandTapped("+")
                     }
+                    
                     Spacer()
                     
-                    Button(action: {
-                        self.operandTapped("-")
-                    }) {
+                    Button(action: {}) {
                         Text("-")
+                    }.onTapGesture {
+                        self.operandTapped("-")
                     }
                     
                 }.buttonStyle(calcButton())
@@ -131,18 +134,20 @@ struct ContentView: View {
                     createCalcDigit(".")
                 }.buttonStyle(numberButton())
                 
-                Button(action: {
-                    self.operandTapped("0")
-                }) {
+                Button(action: {}) {
                     Text("AC")
-                        .font(.system(size: 25))
+                    .font(.system(size: 25))
                 }.buttonStyle(calcButton())
+                 .onTapGesture {
+                    self.calculatorText = "0"
+                }
                 
-                Button(action: {
-                    self.calculate()
-                }) {
+                Button(action: {}) {
                     (Text("="))
                 }.buttonStyle(equalButton())
+                 .onTapGesture {
+                    self.calculate()
+                }
                 
             }.padding(.bottom, 50)
         }
@@ -152,18 +157,24 @@ struct ContentView: View {
         .edgesIgnoringSafeArea(.all)
     }
     
-    private func createCalcDigit(_ number: String) -> Button<Text> {
+    private func createCalcDigit(_ number: String) -> some View {
         return Button(action: {
-            self.digitTapped(number)
         }) {
-            (Text(number))
+            Text(number)
+        }.onTapGesture {
+            self.operandTapped(number)
         }
+        
     }
     
     // ------------------------------ MARK - Calculations ------------------------------
     // pressing a number
     private func digitTapped(_ number: String) -> Void {
-        calculatorText += number
+        if(calculatorText == "0"){
+            calculatorText = number;
+        } else {
+            calculatorText.append(number);
+        }
     }
     
     // basic calculations
@@ -180,7 +191,12 @@ struct ContentView: View {
                 formattedOperand = operand
         }
         
-        calculatorText += formattedOperand
+        if(calculatorText == "0"){
+            calculatorText = formattedOperand;
+        } else {
+            calculatorText.append(formattedOperand);
+        }
+
     }
     
     // what happens when you press "="
