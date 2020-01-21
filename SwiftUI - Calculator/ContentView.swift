@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var calculatorText = "0"
     @State private var isTypingNumber = false
     
+// ----------  ----------  ---------- MARK - Body ----------  ----------  ----------
 //      basically the whole body (=everything u see on screen)
     var body: some View {
         VStack(spacing: 50) {
@@ -24,44 +25,24 @@ struct ContentView: View {
                 .multilineTextAlignment(.trailing)
             
             HStack {
-                Button(action: {
-                    self.operandTapped("0")
-                }) {
-                    Text("AC")
-                }
-                Spacer()
-                Button(action: {
-                    self.operandTapped("±")
-                }) {
-                    Text("+/-")
-                }
-                Spacer()
-                Button(action: {
-                    self.operandTapped("%")
-                }) {
-                    Text("%")
-                }
-                Spacer()
-                Button(action: {
-                    self.operandTapped("/")
-                }) {
-                    Text("/")
-                }
-            }.padding()
-
-            HStack {
-                createCalcDigit("7")
-                Spacer()
-                createCalcDigit("8")
-                Spacer()
-                createCalcDigit("9")
-                Spacer()
-                Button(action: {
-                    self.operandTapped("*")
-                }) {
-                    Text("×")
-                }
-            }.padding()
+                Group {
+                    createCalcDigit("7")
+                    createCalcDigit("8")
+                    createCalcDigit("9")
+                }.buttonStyle(numberButton())
+                Group {
+                    Button(action: {
+                        self.operandTapped("±")
+                    }) {
+                        Text("±")
+                    }
+                    Button(action: {
+                        self.operandTapped("%")
+                    }) {
+                        Text("%")
+                    }
+                }.buttonStyle(calcButton())
+            }
 
             HStack {
                 createCalcDigit("4")
@@ -71,11 +52,18 @@ struct ContentView: View {
                 createCalcDigit("6")
                 Spacer()
                 Button(action: {
-                    self.operandTapped("-")
+                    self.operandTapped("/")
                 }) {
-                    Text("-")
+                    Text("/")
                 }
-            }.padding()
+                Spacer()
+                Button(action: {
+                    self.operandTapped("*")
+                }) {
+                    Text("×")
+                }
+            }.padding(.horizontal, 28)
+            .multilineTextAlignment(.center)
 
             HStack {
                 createCalcDigit("1")
@@ -89,23 +77,37 @@ struct ContentView: View {
                 }) {
                     Text("+")
                 }
-            }.padding()
+                Spacer()
+                Button(action: {
+                    self.operandTapped("-")
+                }) {
+                    Text("-")
+                }
+                
+            }.padding(.horizontal, 33)
+            .multilineTextAlignment(.center)
 
             HStack {
-                Spacer()
                 createCalcDigit("0")
                 Spacer()
                 createCalcDigit(".")
                 Spacer()
                 Button(action: {
+                    self.operandTapped("0")
+                }) {
+                    Text("AC")
+                }
+                Spacer(minLength: 140)
+                Button(action: {
                     self.calculate()
                 }) {
                     (Text("="))
                 }
-
-            }.padding()
+            }.padding(.horizontal, 33)
+            .multilineTextAlignment(.center)
         }
         .font(.largeTitle)
+        .background(Color(red: 72/255, green: 76/255, blue: 80/255))
     }
     
     private func createCalcDigit(_ number: String) -> Button<Text> {
@@ -116,6 +118,7 @@ struct ContentView: View {
         }
     }
 
+// ----------  ----------  ---------- MARK - Calculations ----------  ----------  ----------
 //      pressing a number
     private func digitTapped(_ number: String) -> Void {
         if isTypingNumber {
@@ -170,6 +173,29 @@ struct ContentView: View {
         calculatorText = result
     }
 
+    
+// ----------  ----------  ---------- MARK - ButtonStyle ----------  ----------  ----------
+    struct numberButton: PrimitiveButtonStyle {
+        func makeBody(configuration: Self.Configuration) -> some View {
+            configuration.label
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .padding()
+                .foregroundColor(.white)
+        }
+    }
+    
+    struct calcButton: PrimitiveButtonStyle {
+        func makeBody(configuration: Self.Configuration) -> some View {
+            configuration.label
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .padding()
+                .foregroundColor(.black)
+                .background(Color(red: 141/255, green: 201/255, blue: 207/255))
+            .cornerRadius(40)
+        }
+    }
+    
+    
 //      This is just for preview reasons here, do not delete or change (unless you know what you are doing)!!
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
