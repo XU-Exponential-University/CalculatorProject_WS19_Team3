@@ -17,7 +17,7 @@ struct ContentView: View {
     @State private var isTypingNumber = false
     @State private var calcHistory: [String: Double] = [:]
     
-    // ------------------------------ MARK - Body ------------------------------
+    // MARK: --------- Body ---------
     // basically the whole body (=everything u see on screen)
     var body: some View {
         VStack(spacing: 20) {
@@ -167,7 +167,7 @@ struct ContentView: View {
         
     }
     
-    // ------------------------------ MARK - Calculations ------------------------------
+    // MARK: --------- Calculations ---------
     // pressing a number
     private func digitTapped(_ number: String) -> Void {
         if(calculatorText == "0"){
@@ -210,7 +210,7 @@ struct ContentView: View {
     }
     
     
-    // ------------------------------ MARK - ButtonStyle ------------------------------
+    // MARK: --------- ButtonStyle ---------
     struct numberButton: PrimitiveButtonStyle {
         func makeBody(configuration: Self.Configuration) -> some View {
             configuration.label
@@ -256,7 +256,7 @@ struct ContentView: View {
         }
     }
     
-    // ------------------------------ MARK - ContenView Preview -----------------------------
+    // MARK: --------- ContenView Preview ---------
     // This is just for preview reasons here, do not delete or change (unless you know what you are doing)!!
     struct ContentView_Previews: PreviewProvider {
         static var previews: some View {
