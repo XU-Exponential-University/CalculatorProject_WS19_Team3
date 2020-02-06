@@ -24,12 +24,15 @@ struct ContentView: View {
             
             Spacer()
             
-            TextField("0", text: $calculatorText).font(.system(size: 100))
+            TextField("0", text: $calculatorText)
+                .font(.system(size: 100))
+                .minimumScaleFactor(0.5)
                 .padding()
                 .multilineTextAlignment(.trailing)
                 .foregroundColor(.white)
                 .truncationMode(.head)
                 .disabled(true)
+
             
             HStack {
                 
@@ -256,6 +259,9 @@ struct ContentView: View {
         }
     }
     
+    
+
+    
     // MARK: --------- ContenView Preview ---------
     // This is just for preview reasons here, do not delete or change (unless you know what you are doing)!!
     struct ContentView_Previews: PreviewProvider {
@@ -266,3 +272,7 @@ struct ContentView: View {
     
     
 }
+
+//
+
+
