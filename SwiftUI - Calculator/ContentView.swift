@@ -206,10 +206,13 @@ struct ContentView: View {
     private func calculate() {
         let inputExpression = calculatorText;
         let cleanedExpression = inputExpression.replacingOccurrences(of: "√", with: "sqrt")
-        let res: Double = NSExpression(format: cleanedExpression).expressionValue(with: nil, context: nil) as! Double
-        
-        calculatorText = String(res)
-        calcHistory[inputExpression] = res
+        if let res: Double = NSExpression(format: cleanedExpression).expressionValue(with: nil, context: nil) as! Double {
+            calculatorText = String(res)
+            calcHistory[inputExpression] = res
+        } else {
+            calculatorText = "Error"
+        }
+
     }
     
     
