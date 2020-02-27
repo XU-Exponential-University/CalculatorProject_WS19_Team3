@@ -23,10 +23,12 @@ struct ContentView: View {
         VStack(spacing: 20) {
             
             Spacer()
+
             
+    //textfield look/ default number
             TextField("0", text: $calculatorText)
                 .font(.system(size: 100))
-                .minimumScaleFactor(0.5)
+                .minimumScaleFactor(0.5) //font size smaller by 50%
                 .padding()
                 .multilineTextAlignment(.trailing)
                 .foregroundColor(.white)
@@ -154,6 +156,8 @@ struct ContentView: View {
                 
             }.padding(.bottom, 50)
         }
+            
+    // Background of the calculator
         .font(.largeTitle)
         .padding()
         .background(Color(red: 72/255, green: 76/255, blue: 80/255))
@@ -217,6 +221,8 @@ struct ContentView: View {
     
     
     // MARK: --------- ButtonStyle ---------
+   
+    // Button style for all Numbers
     struct numberButton: PrimitiveButtonStyle {
         func makeBody(configuration: Self.Configuration) -> some View {
             configuration.label
@@ -226,6 +232,7 @@ struct ContentView: View {
         }
     }
     
+    // Button style for brackets
     struct klammernButton: PrimitiveButtonStyle {
         func makeBody(configuration: Self.Configuration) -> some View {
             configuration.label
@@ -238,6 +245,7 @@ struct ContentView: View {
         }
     }
     
+    // Button style for all compute-signs
     struct calcButton: PrimitiveButtonStyle {
         func makeBody(configuration: Self.Configuration) -> some View {
             configuration.label
@@ -250,6 +258,7 @@ struct ContentView: View {
         }
     }
     
+    // Button style for "=" button
     struct equalButton: PrimitiveButtonStyle {
         func makeBody(configuration: Self.Configuration) -> some View {
             configuration.label
