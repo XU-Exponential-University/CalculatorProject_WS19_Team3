@@ -8,6 +8,50 @@
 
 import SwiftUI
 
+extension String {
+    func matches(_ regex: String) -> Bool {
+        return self.range(of: regex, options: .regularExpression, range: nil, locale: nil) != nil
+    }
+}
+
+extension NSExpression {
+
+    func toFloatingPoint() -> NSExpression {
+        switch expressionType {
+        case .constantValue:
+            if let value = constantValue as? NSNumber {
+                return NSExpression(forConstantValue: NSNumber(value: value.doubleValue))
+            }
+        case .function:
+           let newArgs = arguments.map { $0.map { $0.toFloatingPoint() } }
+           return NSExpression(forFunction: operand, selectorName: function, arguments: newArgs)
+        case .conditional:
+           return NSExpression(forConditional: predicate, trueExpression: self.true.toFloatingPoint(), falseExpression: self.false.toFloatingPoint())
+        case .unionSet:
+            return NSExpression(forUnionSet: left.toFloatingPoint(), with: right.toFloatingPoint())
+        case .intersectSet:
+            return NSExpression(forIntersectSet: left.toFloatingPoint(), with: right.toFloatingPoint())
+        case .minusSet:
+            return NSExpression(forMinusSet: left.toFloatingPoint(), with: right.toFloatingPoint())
+        case .subquery:
+            if let subQuery = collection as? NSExpression {
+                return NSExpression(forSubquery: subQuery.toFloatingPoint(), usingIteratorVariable: variable, predicate: predicate)
+            }
+        case .aggregate:
+            if let subExpressions = collection as? [NSExpression] {
+                return NSExpression(forAggregate: subExpressions.map { $0.toFloatingPoint() })
+            }
+        case .anyKey:
+            fatalError("anyKey not yet implemented")
+        case .block:
+            fatalError("block not yet implemented")
+        case .evaluatedObject, .variable, .keyPath:
+            break // Nothing to do here
+        }
+        return self
+    }
+}
+
 struct ContentView: View {
     
     @State private var firstNumber = "0"
@@ -206,15 +250,62 @@ struct ContentView: View {
 
     }
     
+    func checkParentheses(s: String) -> Int {
+        let pairs: [Character: Character] = ["(": ")", "[": "]", "{": "}"]
+        var stack: [Character] = []
+        for char in s {
+            if let match = pairs[char] {
+                stack.append(match)
+            } else if stack.last == char {
+                stack.popLast()
+            }
+        }
+        return stack.count
+    }
+    
+    
+    func matchesForRegexInText(regex: String!, text: String!) -> Bool {
+
+        do {
+            let regex = try NSRegularExpression(pattern: regex, options: [])
+            let nsString = text as NSString
+            guard let result = regex.firstMatch(in: text, options: [], range: NSMakeRange(0, nsString.length)) else {
+                return false // pattern does not match the string
+            }
+            return true
+        } catch let error as NSError {
+            print("invalid regex: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
     // what happens when you press "="
     private func calculate() {
         let inputExpression = calculatorText;
-        let cleanedExpression = inputExpression.replacingOccurrences(of: "√", with: "sqrt")
-        if let res: Double = NSExpression(format: cleanedExpression).expressionValue(with: nil, context: nil) as! Double {
-            calculatorText = String(res)
-            calcHistory[inputExpression] = res
-        } else {
+        var cleanedExpression = inputExpression.replacingOccurrences(of: "√", with: "sqrt")
+        
+        if matchesForRegexInText(regex: "^([0-9\\-\\*\\+\\s\\(\\)\\.,]+)$", text: cleanedExpression) {
             calculatorText = "Error"
+        } else {
+            
+            let missingParentheses = checkParentheses(s: cleanedExpression)
+            print(missingParentheses)
+            if(missingParentheses > 0){
+                for _ in 1...missingParentheses {
+                    cleanedExpression = cleanedExpression + ")"
+                }
+            }
+            
+            let expr = NSExpression(format: cleanedExpression).toFloatingPoint()
+            do {
+                
+                let res:Double = try! expr.expressionValue(with: nil, context: nil) as! Double
+                calculatorText = String(res)
+                calcHistory[inputExpression] = res
+            } catch {
+                calculatorText = "Error"
+            }
+            
         }
 
     }
