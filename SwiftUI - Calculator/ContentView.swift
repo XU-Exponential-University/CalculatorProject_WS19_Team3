@@ -64,6 +64,7 @@ extension NSExpression {
 
 struct ContentView: View {
     
+    // declared everything at the beginning
     @State private var firstNumber = "0"
     @State private var secondNumber = "0"
     @State private var operand = ""
@@ -71,14 +72,21 @@ struct ContentView: View {
     @State private var isTypingNumber = false
     @State private var calcHistory: [String: Double] = [:]
     
-    // basically the whole body (=everything u see on screen)
+    // basically the whole body (= everything u see on screen)
     var body: some View {
         VStack(spacing: 20) {
             
             Spacer()
 
             
-    //textfield look/ default number
+            /*
+                Some explanation here, because it would get boring repeating myself for all HStacks:
+                    - createCalcDigit: Should show the number pressed
+                    - buttonStyle: Changes the design of the buttons respectively (declared in lines 355 - 400)
+                    - Button: Shows the brackets or basic operations respectively
+            */
+            
+            //textfield look / default number
             TextField("0", text: $calculatorText)
                 .font(.system(size: 100))
                 .minimumScaleFactor(0.5) //font size smaller by 50%
@@ -88,7 +96,6 @@ struct ContentView: View {
                 .truncationMode(.head)
                 .disabled(true)
 
-            
             HStack {
                 
                 Button(action: {}) {
